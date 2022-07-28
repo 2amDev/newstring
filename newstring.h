@@ -5,36 +5,36 @@ class new_string
 {
 public:
 
-	new_string() {}
+	inline new_string() {}
 
 	template < typename T>
-	new_string(T string)
+	inline new_string(T string)
 	{
 		assign_w_string(string);
 	}
 
 	/* copy constructor uses contents  of old wchar*, as the old string's wchar* will be freed when it leaves scope */
 
-	new_string(const new_string& constructor_string)
+	inline new_string(const new_string& constructor_string)
 	{
 		assign_w_string(constructor_string.wide_string);
 		string_size = constructor_string.string_size;
 	}
 
-	void operator=(new_string string)
+	inline void operator=(new_string string)
 	{
 		if (string.wide_string)
 			assign_w_string(string.w_str());
 	}
 
 	template < typename T>
-	void operator=(T string)
+	inline void operator=(T string)
 	{
 		if (string)
 			assign_w_string(string);
 	}
 
-	void operator+=(new_string additional_string)
+	inline void operator+=(new_string additional_string)
 	{
 		if (!additional_string.wide_string)
 			return;
@@ -55,7 +55,7 @@ public:
 		make_c_string();
 	}
 
-	new_string operator+(new_string additional_string)
+	inline new_string operator+(new_string additional_string)
 	{
 		/* is the string we were just passed a nullptr? if so just return ourselves */
 		if (!additional_string.wide_string)
@@ -74,25 +74,25 @@ public:
 		return new_obj;
 	}
 
-	wchar_t operator[] (int index)
+	inline wchar_t operator[] (int index)
 	{
 		return (index < string_size - 1) ? wide_string[index] : throw std::out_of_range("Invalid iterator");
 	}
 
 	template < typename T>
-	bool operator==(T compare_against)
+	inline bool operator==(T compare_against)
 	{
 		return equal(compare_against);
 	}
 
 	template < typename T>
-	bool operator!=(T compare_against)
+	inline bool operator!=(T compare_against)
 	{
 		return !equal(compare_against);
 	}
 
 	/* free our internal wchar_t* on destruction */
-	~new_string()
+	inline ~new_string()
 	{
 		if (wide_string)
 			free(wide_string);
@@ -102,17 +102,17 @@ public:
 
 	/* getter functions */
 
-	wchar_t* w_str()
+	inline wchar_t* w_str()
 	{
 		return wide_string;
 	}
 
-	char* c_str()
+	inline char* c_str()
 	{
 		return c_string;
 	}
 
-	size_t length()
+	inline size_t length()
 	{
 		/* the size we use internally is that of the full string, but
 		the user doesn't care about the terminating '\0' */
@@ -120,13 +120,13 @@ public:
 	}
 
 	template < typename T>
-	void append(T string)
+	inline void append(T string)
 	{
 		*this += string;
 	}
 
 	template < typename T>
-	bool equal(T string)
+	inline bool equal(T string)
 	{
 		new_string compare_string = new_string(string);
 		if (!compare_string.wide_string)
@@ -141,7 +141,7 @@ public:
 	}
 
 	template < typename T>
-	bool contains(T string)
+	inline bool contains(T string)
 	{
 		new_string compare_string = new_string(string);
 		if (!compare_string.wide_string)
@@ -170,7 +170,7 @@ public:
 private:
 
 	template < typename T>
-	void assign_w_string(T string)
+	inline void assign_w_string(T string)
 	{
 		if (!string)
 			return;
@@ -191,7 +191,7 @@ private:
 		make_c_string();
 	}
 
-	void make_c_string()
+	inline void make_c_string()
 	{
 		if (!wide_string)
 			return;
