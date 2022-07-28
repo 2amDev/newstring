@@ -74,6 +74,11 @@ public:
 		return new_obj;
 	}
 
+	wchar_t operator[] (int index)
+	{
+		return (index < string_size - 1) ? wide_string[index] : throw std::out_of_range("Invalid iterator");
+	}
+
 	template < typename T>
 	bool operator==(T compare_against)
 	{
@@ -107,17 +112,11 @@ public:
 		return c_string;
 	}
 
-	size_t get_size()
+	size_t length()
 	{
 		/* the size we use internally is that of the full string, but
 		the user doesn't care about the terminating '\0' */
 		return string_size - 1;
-	}
-
-	wchar_t get(int iterator)
-	{
-		/* user's responsibility to pass in a valid iterator */
-		return wide_string[iterator];
 	}
 
 	template < typename T>
@@ -215,7 +214,7 @@ private:
 	}
 
 	wchar_t* wide_string = 0;
-	char* c_string = 0;
+	char*	 c_string	 = 0;
 
-	size_t string_size = 0;
+	size_t	 string_size = 0;
 };
