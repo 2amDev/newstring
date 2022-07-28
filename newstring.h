@@ -13,8 +13,6 @@ public:
 		assign_w_string(string);
 	}
 
-	/* copy constructor uses contents  of old wchar*, as the old string's wchar* will be freed when it leaves scope */
-
 	inline new_string(const new_string& constructor_string)
 	{
 		assign_w_string(constructor_string.wide_string);
@@ -49,7 +47,7 @@ public:
 
 		free(wide_string);
 
-		/* we only kept one of the trailing '\0' from the strings, so new size is size of both strings - 1 */
+		// account for discarding one of the string terminators
 		string_size = string_size + additional_string.string_size - 1;
 		wide_string = new_string;
 		make_c_string();
@@ -57,7 +55,7 @@ public:
 
 	inline new_string operator+(new_string additional_string)
 	{
-		/* is the string we were just passed a nullptr? if so just return ourselves */
+		// if appended string isn't valid we don't need to do anything
 		if (!additional_string.wide_string)
 			return *this;
 
@@ -74,7 +72,7 @@ public:
 		return new_obj;
 	}
 
-	inline wchar_t operator[] (int index)
+	inline wchar_t operator[](int index)
 	{
 		return (index < string_size - 1) ? wide_string[index] : throw std::out_of_range("Invalid iterator");
 	}
@@ -91,8 +89,7 @@ public:
 		return !equal(compare_against);
 	}
 
-	/* free our internal wchar_t* on destruction */
-	inline ~new_string()
+	inline~new_string()
 	{
 		if (wide_string)
 			free(wide_string);
@@ -100,7 +97,7 @@ public:
 			free(c_string);
 	}
 
-	/* getter functions */
+	// basic getter functions
 
 	inline wchar_t* w_str()
 	{
@@ -114,8 +111,7 @@ public:
 
 	inline size_t length()
 	{
-		/* the size we use internally is that of the full string, but
-		the user doesn't care about the terminating '\0' */
+		// we don't care for string terminator
 		return string_size - 1;
 	}
 
@@ -178,8 +174,7 @@ private:
 		if (wide_string)
 			free(wide_string);
 
-		/* add +2 to the legnth, as we start indexing at zero and our legnth is that of the full string, which
-		includes the '\0' */
+		// add +2 as we start index at zero, and we want to include for string terminator
 		for (int i = 0; string[i] != '\0'; i++)
 			string_size = i + 2;
 
@@ -199,9 +194,6 @@ private:
 		if (c_string)
 			free(c_string);
 
-		/* add +2 to the legnth, as we start indexing at zero and our legnth is that of the full string, which
-		includes the '\0' */
-
 		c_string = (char*)malloc(string_size * sizeof(char));
 
 		for (int i = 0; i <= string_size - 1; i++)
@@ -214,7 +206,7 @@ private:
 	}
 
 	wchar_t* wide_string = 0;
-	char*	 c_string	 = 0;
+	char* c_string = 0;
 
-	size_t	 string_size = 0;
+	size_t string_size = 0;
 };
