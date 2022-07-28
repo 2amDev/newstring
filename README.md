@@ -10,7 +10,7 @@ yet never needing beyond the ASCII charset.
 <pre><code>
 wchar_t* w_str() //  get wide string
 char* c_str() //  get c string
-size_t length() // get string size ( excluding null terminator )
+size_t length() // get string size
 void append(T string) // append a string
 bool equal(T string) // check if string is equal to another
 bool contains(T string) // check if string contains a substring
